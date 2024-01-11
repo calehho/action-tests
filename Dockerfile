@@ -1,3 +1,3 @@
 FROM alpine:3
 
-CMD [ "echo hello" ]
+CMD [ "echo helloworld" ]
