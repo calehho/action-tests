@@ -2,3 +2,6 @@
 
 build: 
 	echo build
+
+build-docs:
+	echo build docs
