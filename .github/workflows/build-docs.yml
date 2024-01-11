@@ -11,6 +11,7 @@ on:
       - "x/**/*.md"
       - .github/workflows/deploy-docs.yml
       - .github/workflows/build-docs.yml
+      - "README.md"
 
 permissions:
   contents: read
