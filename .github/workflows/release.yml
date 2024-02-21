@@ -104,6 +104,7 @@ jobs:
 
       - run: |
           mv ./linux/capell-chaind ./linux/capell-chaind-linux
+          mkdir ./macos
           mv ./macos-amd/capell-chaind ./macos/capell-chaind-macos-amd
           mv ./macos-m1/capell-chaind ./macos/capell-chaind-macos-m1
 
