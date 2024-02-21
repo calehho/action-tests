@@ -1,0 +1,106 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+      - release/**
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v[0-9]+.[0-9]+.[0-9]+-rc*" # Push events to matching v*, i.e. v1.0-rc1, v20.15.10-rc5
+
+jobs:
+  build:
+    name: Build Release
+    strategy:
+      matrix:
+        go-version: [1.19.x]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{matrix.go-version}}
+      - uses: actions/cache@v3
+        with:
+          # In order:
+          # * Module download cache
+          # * Build cache (Linux)
+          # * Build cache (Mac)
+          # * Build cache (Windows)
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+            ~\AppData\Local\go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      
+      - name: Build Binary for ${{matrix.os}}
+        run: make build
+
+      - name: Upload Linux Build
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          name: capell-chaind-linux
+          path: ./build/linux/capell-chaind
+
+      - name: Upload MacOS Build
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'macos-latest'
+        with:
+          name: capell-chaind-macos
+          path: ./build/darwin/capell-chaind
+
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # ==============================
+      #       Download artifacts
+      # ==============================
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: capell-chaind-linux
+          path: ./linux
+      
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: capell-chaind-macos
+          path: ./macos
+      
+      # Rename files
+      - run: |
+          mv ./linux/capell-chaind ./linux/capell-chaind-linux
+          mv ./macos/capell-chaind ./macos/capell-chaind-macos
+
+      # ==============================
+      #       Create release
+      # ==============================
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION}}
+          release_name: ${{ env.RELEASE_VERSION}}
+          body: |
+            ${{ env.CHANGELOG }}
+          draft: false
+          prerelease: false
+          files: |
+            ./linux/capell-chaind-linux
+            ./macos/capell-chaind-macos
