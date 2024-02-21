@@ -54,6 +54,8 @@ jobs:
         with:
           name: capell-chaind-macos-amd
           path: ./build/darwin/capell-chaind
+          
+      - run: ls ./build
 
       - name: Upload MacOS m1 Build
         uses: actions/upload-artifact@v3
