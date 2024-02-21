@@ -124,4 +124,5 @@ jobs:
           prerelease: false
           files: |
             ./linux/capell-chaind-linux
-            ./macos/capell-chaind-macos
+            ./macos/capell-chaind-macos-amd
+            ./macos/capell-chaind-macos-m1
