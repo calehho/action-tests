@@ -99,7 +99,12 @@ jobs:
       
       # Rename files
       - run: |
+          ls ./macos-amd
+          ls ./macos-m1
+
+      - run: |
           mv ./linux/capell-chaind ./linux/capell-chaind-linux
+          mv ./macos-amd/capell-chaind ./macos/capell-chaind-macos-amd
           mv ./macos-m1/capell-chaind ./macos/capell-chaind-macos-m1
 
       # ==============================
