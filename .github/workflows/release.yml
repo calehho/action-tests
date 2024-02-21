@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.21.x]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, macos-14]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v3
@@ -48,12 +48,19 @@ jobs:
           name: capell-chaind-linux
           path: ./build/linux/capell-chaind
 
-      - name: Upload MacOS Build
+      - name: Upload MacOS amd Build
         uses: actions/upload-artifact@v3
         if: matrix.os == 'macos-latest'
         with:
-          name: capell-chaind-macos
+          name: capell-chaind-macos-amd
           path: ./build/darwin/capell-chaind
+
+      - name: Upload MacOS m1 Build
+        uses: actions/upload-artifact@v3
+        if: matrix.os == 'macos-14'
+        with:
+            name: capell-chaind-macos-m1
+            path: ./build/darwin/capell-chaind
 
   release:
     name: Release
@@ -79,13 +86,20 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: capell-chaind-macos
-          path: ./macos
+          name: capell-chaind-macos-amd
+          path: ./macos-amd
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: capell-chaind-macos-m1
+          path: ./macos-m1
       
       # Rename files
       - run: |
           mv ./linux/capell-chaind ./linux/capell-chaind-linux
-          mv ./macos/capell-chaind ./macos/capell-chaind-macos
+          mv ./macos-amd/capell-chaind ./macos/capell-chaind-macos-amd
+          mv ./macos-m1/capell-chaind ./macos/capell-chaind-macos-m1
 
       # ==============================
       #       Create release
