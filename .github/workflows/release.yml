@@ -54,7 +54,7 @@ jobs:
         with:
           name: capell-chaind-macos-amd
           path: ./build/darwin/capell-chaind
-          
+
       - run: ls ./build
 
       - name: Upload MacOS m1 Build
@@ -79,19 +79,19 @@ jobs:
       #       Download artifacts
       # ==============================
 
-      - name: Download Artifacts
+      - name: Download Artifacts linux
         uses: actions/download-artifact@v3
         with:
           name: capell-chaind-linux
           path: ./linux
       
-      - name: Download Artifacts
+      - name: Download Artifacts macos amd
         uses: actions/download-artifact@v3
         with:
           name: capell-chaind-macos-amd
           path: ./macos-amd
 
-      - name: Download Artifacts
+      - name: Download Artifacts macos m1
         uses: actions/download-artifact@v3
         with:
           name: capell-chaind-macos-m1
@@ -100,7 +100,6 @@ jobs:
       # Rename files
       - run: |
           mv ./linux/capell-chaind ./linux/capell-chaind-linux
-          mv ./macos-amd/capell-chaind ./macos/capell-chaind-macos-amd
           mv ./macos-m1/capell-chaind ./macos/capell-chaind-macos-m1
 
       # ==============================
