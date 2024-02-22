@@ -19,6 +19,7 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v3
+      - run: git diff
       - uses: actions/setup-go@v3
         with:
           go-version: ${{matrix.go-version}}
