@@ -1,0 +1,14 @@
+name: protobuf-check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  protobuf-check:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: No diff  
+        run: git diff 
