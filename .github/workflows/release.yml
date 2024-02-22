@@ -94,11 +94,6 @@ jobs:
     #     with:
     #       name: capell-chaind-macos-m1
     #       path: ./macos-m1
-      
-      # Rename files
-      - run: |
-          ls ./macos-amd
-          ls ./macos-m1
 
       - run: |
           mv ./linux/capell-chaind ./linux/capell-chaind-linux
