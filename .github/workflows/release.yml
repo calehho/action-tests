@@ -24,11 +24,6 @@ jobs:
           go-version: ${{matrix.go-version}}
       - uses: actions/cache@v3
         with:
-          # In order:
-          # * Module download cache
-          # * Build cache (Linux)
-          # * Build cache (Mac)
-          # * Build cache (Windows)
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
@@ -48,24 +43,27 @@ jobs:
           name: capell-chaind-linux
           path: ./build/linux/capell-chaind
 
-      - name: Upload MacOS amd Build
-        uses: actions/upload-artifact@v3
-        if: matrix.os == 'macos-latest'
-        with:
-          name: capell-chaind-macos-amd
-          path: ./build/darwin/capell-chaind
+    #   - name: Upload MacOS amd Build
+    #     uses: actions/upload-artifact@v3
+    #     if: matrix.os == 'macos-latest'
+    #     with:
+    #       name: capell-chaind-macos-amd
+    #       path: ./build/darwin/capell-chaind
 
-      - run: ls ./build
+    #   - run: ls ./build
 
-      - name: Upload MacOS m1 Build
-        uses: actions/upload-artifact@v3
-        if: matrix.os == 'macos-14'
-        with:
-            name: capell-chaind-macos-m1
-            path: ./build/darwin/capell-chaind
+    #   - name: Upload MacOS m1 Build
+    #     uses: actions/upload-artifact@v3
+    #     if: matrix.os == 'macos-14'
+    #     with:
+    #         name: capell-chaind-macos-m1
+    #         path: ./build/darwin/capell-chaind
 
   release:
     name: Release
+    strategy:
+        matrix:
+          os: [self-hosted]
     needs: build
     runs-on: self-hosted
     steps:
@@ -85,17 +83,17 @@ jobs:
           name: capell-chaind-linux
           path: ./linux
       
-      - name: Download Artifacts macos amd
-        uses: actions/download-artifact@v3
-        with:
-          name: capell-chaind-macos-amd
-          path: ./macos-amd
+    #   - name: Download Artifacts macos amd
+    #     uses: actions/download-artifact@v3
+    #     with:
+    #       name: capell-chaind-macos-amd
+    #       path: ./macos-amd
 
-      - name: Download Artifacts macos m1
-        uses: actions/download-artifact@v3
-        with:
-          name: capell-chaind-macos-m1
-          path: ./macos-m1
+    #   - name: Download Artifacts macos m1
+    #     uses: actions/download-artifact@v3
+    #     with:
+    #       name: capell-chaind-macos-m1
+    #       path: ./macos-m1
       
       # Rename files
       - run: |
@@ -104,9 +102,9 @@ jobs:
 
       - run: |
           mv ./linux/capell-chaind ./linux/capell-chaind-linux
-          mkdir ./macos
-          mv ./macos-amd/capell-chaind ./macos/capell-chaind-macos-amd
-          mv ./macos-m1/capell-chaind ./macos/capell-chaind-macos-m1
+#         mkdir ./macos
+#         mv ./macos-amd/capell-chaind ./macos/capell-chaind-macos-amd
+#         mv ./macos-m1/capell-chaind ./macos/capell-chaind-macos-m1
 
       # ==============================
       #       Create release
@@ -124,5 +122,5 @@ jobs:
           prerelease: false
           files: |
             ./linux/capell-chaind-linux
-            ./macos/capell-chaind-macos-amd
-            ./macos/capell-chaind-macos-m1
+#           ./macos/capell-chaind-macos-amd
+#           ./macos/capell-chaind-macos-m1
