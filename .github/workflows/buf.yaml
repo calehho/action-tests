@@ -9,4 +9,4 @@ jobs:
   protobuf-check:
     runs-on: self-hosted
     steps:
-     - run: git status 
+     - run: ls
