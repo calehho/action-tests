@@ -9,5 +9,4 @@ jobs:
   protobuf-check:
     runs-on: self-hosted
     steps:
-      - name: No diff  
-        run: git diff 
+     - run: git status 
